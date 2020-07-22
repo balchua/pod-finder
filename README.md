@@ -35,6 +35,54 @@ This section shows how to run the application in either inside a kubernetes clus
 
 ### In cluster
 
+In order to run this inside the kubernetes cluster, you need to have the approproate RBAC.
+
+For monitoring the pods within the same namespace, a simple `Role` and `RoleBinding` is sufficient.
+
+See example below.
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-finder
+  namespace: artemis
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-finder
+  namespace: artemis
+rules:
+- apiGroups: ["*"]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-finder
+  namespace: artemis
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-finder
+subjects:
+- kind: ServiceAccount
+  name: pod-finder
+  namespace: artemis
+```
+
+In this example, we bind the `ServiceAccount` `pod-finder` to the namespace `artemis`.  This way, the `pod-finder` can only check for pods within the same namespace.
+
+If there is a need to perform pod finding outside the namespace, one needs to use `ClusterRole`.
+
+When running the application inside the cluster, there is no need to pass the argument `--config` to the application.
+
+As an example, refer to the file [`pod-finder`](k8s-manifests/pod-finder.yaml).
+
 
 ### Out of cluster
 

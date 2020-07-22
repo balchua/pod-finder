@@ -103,7 +103,6 @@ func doWork(kclient *kubernetes.Clientset) {
 		case <-done:
 			return
 		case <-ticker.C:
-
 			findPods(kclient)
 		}
 	}
@@ -115,7 +114,7 @@ func findPods(kclient *kubernetes.Clientset) {
 	if err != nil {
 		log.Error("Unable to get pods.")
 	}
-	handler.WriteToFile(pods)
+	handler.WriteToFile(pods, OutputPath)
 	log.Infof("Finished retrieving pods in namespace %s", Namespace)
 }
 

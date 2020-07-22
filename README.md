@@ -6,18 +6,18 @@ The generated file will look like this
 
 ```json
 {
-    [
-        {
-            "name": "pod-name",
-            "ip": "pod-ip",
-            "status": "status"
-        },
-        {
-            "name": "pod-name",
-            "ip": "pod-ip",
-            "status": "status"
-        }
-    ]
+  "pods": [
+    {
+      "name": "mypod-54f75566fb-6vmbv",
+      "ip": "10.1.81.30",
+      "status": "Running"
+    },
+    {
+      "name": "mypod-54f75566fb-3hgt5",
+      "ip": "10.1.81.31",
+      "status": "Running"
+    }
+  ]
 }
 ```
 

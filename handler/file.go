@@ -8,9 +8,10 @@ import (
 )
 
 //WriteToFile writes the json result to file
-func WriteToFile(pods *corev1.PodList) {
+func WriteToFile(pods *corev1.PodList, outputPath string) {
 
-	podInfos := PodInfos{}
+	podInfos := PodInfos{make([]PodDetail, 0)}
+
 	for _, pod := range pods.Items {
 		podInfo := PodDetail{
 			IP:     pod.Status.PodIP,
@@ -21,6 +22,7 @@ func WriteToFile(pods *corev1.PodList) {
 
 	}
 
-	file, _ := json.MarshalIndent(podInfos, "", "")
-	_ = ioutil.WriteFile("test.json", file, 0644)
+	file, _ := json.MarshalIndent(podInfos, "", "  ")
+	_ = ioutil.WriteFile(outputPath, file, 0644)
+
 }

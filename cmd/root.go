@@ -12,6 +12,7 @@ var (
 	PathToConfig string
 	Namespace    string
 	Period       int
+	OutputPath   string
 
 	rootCmd = &cobra.Command{
 
@@ -22,14 +23,16 @@ var (
 )
 
 func init() {
-	log.SetFormatter(&log.JSONFormatter{})
+	log.SetFormatter(&log.TextFormatter{})
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.InfoLevel)
 
-	rootCmd.PersistentFlags().StringVarP(&PathToConfig, "config", "c", "", "config file (default is $KUBECONFIG)")
+	rootCmd.PersistentFlags().StringVarP(&PathToConfig, "config", "c", "", "config file where the $KUBECONFIG is located.  If empty, it will assume that the pod-finder is running inside the cluster.")
 	rootCmd.PersistentFlags().StringVarP(&Namespace, "namespace", "n", "default", "The namespace to look for the pods.")
 	rootCmd.PersistentFlags().StringVarP(&Selectors, "label", "l", "", "To find pods based on kubernetes selector")
 	rootCmd.PersistentFlags().IntVarP(&Period, "period", "p", 10, "The period in seconds to get Pod information.")
+	rootCmd.PersistentFlags().StringVarP(&OutputPath, "output", "o", "", "(Required) Output file from where the result will be written.  Ex: /tmp/output.json")
+	rootCmd.MarkPersistentFlagRequired("output")
 
 }
 

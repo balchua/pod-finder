@@ -5,6 +5,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/balchua/pod-finder/handler"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
@@ -111,9 +112,7 @@ func findPods(kclient *kubernetes.Clientset) {
 	if err != nil {
 		log.Error("Unable to get pods.")
 	}
-	for _, pod := range pods.Items {
-		log.Info(pod.Name)
-	}
+	handler.WriteToFile(pods)
 }
 
 func signalTerminate(c <-chan os.Signal) {

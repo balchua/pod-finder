@@ -1,0 +1,9 @@
+{
+"pods": [
+{
+"name": "artemis-activemq-54f75566fb-6vmbv",
+"ip": "10.1.81.30",
+"status": "Running"
+}
+]
+}

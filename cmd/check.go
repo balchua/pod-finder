@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/balchua/pod-finder/handler"
@@ -27,7 +28,7 @@ var checkCmd = &cobra.Command{
 		ticker = time.NewTicker(time.Duration(Period) * time.Second)
 		c := make(chan os.Signal)
 		done = make(chan bool, 1)
-		signal.Notify(c, os.Interrupt)
+		signal.Notify(c, os.Interrupt, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL, syscall.SIGABRT)
 		log.Infof("checking pods in namespace [%s]", Namespace)
 		kclient, err := getClient()
 		if err != nil {
@@ -102,23 +103,26 @@ func doWork(kclient *kubernetes.Clientset) {
 		case <-done:
 			return
 		case <-ticker.C:
+
 			findPods(kclient)
 		}
 	}
 }
 
 func findPods(kclient *kubernetes.Clientset) {
+	log.Infof("Start retrieving pods in namespace %s", Namespace)
 	pods, err := getPods(kclient, Namespace)
 	if err != nil {
 		log.Error("Unable to get pods.")
 	}
 	handler.WriteToFile(pods)
+	log.Infof("Finished retrieving pods in namespace %s", Namespace)
 }
 
 func signalTerminate(c <-chan os.Signal) {
 	select {
 	case sig := <-c:
-		log.Info("Got %s signal. Aborting...\n", sig)
+		log.Infof("Got %s signal. Aborting...", sig)
 		stop()
 	}
 }
